@@ -53,7 +53,7 @@ public class Card1 extends Form {
     public void acceptTerms(){
         terms.click();
     }
-    public void sendForm() {
+    public void clickNext() {
         next.click();
     }
 

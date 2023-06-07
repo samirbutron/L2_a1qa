@@ -25,23 +25,27 @@ public class Card2 extends Form {
     private final ILink userPhoto = AqualityServices.getElementFactory().getLink(By.cssSelector("background-image"), "User photo");
 
     private final ICheckBox checkBox = AqualityServices.getElementFactory().getCheckBox(By.className("avatar-and-interests__interests-list"), "Checkbox");
-    private static final String CHECKBOX_ELEMENTS_LOCATION = "//input[@type='checkbox']";
+    private static final String CHECKBOX_ELEMENTS_LOCATION = "//label[@class='checkbox__label']";
+
+    private final IButton next = AqualityServices.getElementFactory().getButton(By.xpath("//button[@name='button' and contains(text(), 'Next')]"), "Next button");
 
     public void pickCheckboxes(){
-        List<ICheckBox> checkboxes = checkBox.findChildElements(By.className(CHECKBOX_ELEMENTS_LOCATION), "Checkbox element", ElementType.CHECKBOX);
-        String selectAll = "Select all"; //Checkbox to be removed
-        String unselectAll = "Unselect all"; //Checkbox to be removed
+        List<ICheckBox> checkboxes = checkBox.findChildElements(By.xpath(CHECKBOX_ELEMENTS_LOCATION), "Checkbox element", ElementType.CHECKBOX);
+        String selectAll = "interest_selectall"; //Checkbox to be removed
+        String unselectAll = "interest_unselectall"; //Checkbox to be removed
+        logger.info(checkboxes.get(18).getAttribute("for"));
         List<ICheckBox> newList = checkboxes.stream()
                 .peek(element -> {
-                    if (element.getText().equals(unselectAll)) {
+                    if (element.getAttribute("for").equals(unselectAll)) {
                         element.click();
                     }
                 })
-                .filter(element -> !element.getText().equals(selectAll) && !element.getText().equals(unselectAll))
+                .filter(element -> !element.getAttribute("for").equals(selectAll) && !element.getAttribute("for").equals(unselectAll))
                 .collect(Collectors.toList());
+
         Set<Integer> randomNumbers = RandomUtils.generateThreeRandomNumbers(newList.size());
         for (Integer num : randomNumbers){
-            newList.get(num).click();
+            newList.get(num).check();
         }
 
     }
@@ -51,5 +55,9 @@ public class Card2 extends Form {
         //Figure how to upload image
         return userPhoto.state().isDisplayed();
 
+    }
+
+    public void clickNext() {
+        next.click();
     }
 }

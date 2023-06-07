@@ -52,7 +52,7 @@ public class UserInterfaceTest {
     String server = RandomUtils.generateString();
     card1.fillForm(password,email,server);
     card1.acceptTerms();
-    card1.sendForm();
+    card1.clickNext();
     //Assert the '2' card is open
     Assert.assertTrue(card2.state().waitForDisplayed());
     //Choose 3 random interests, upload image, click "Next" button.
