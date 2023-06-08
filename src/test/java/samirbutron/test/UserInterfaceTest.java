@@ -18,12 +18,12 @@ import samirbutron.utils.RandomUtils;
 public class UserInterfaceTest {
 
   private Browser browser;
-  private ISettingsFile testConfig = new JsonSettingsFile("testconfig.json");
-  private String url = testConfig.getValue("/url").toString();
-  private MainPage mainPage = new MainPage();
-  private Card1 card1 = new Card1();
-  private Card2 card2 = new Card2();
-  private Card3 card3 = new Card3();
+  private final ISettingsFile testConfig = new JsonSettingsFile("testconfig.json");
+  private final String url = testConfig.getValue("/url").toString();
+  private final MainPage mainPage = new MainPage();
+  private final Card1 card1 = new Card1();
+  private final Card2 card2 = new Card2();
+  private final Card3 card3 = new Card3();
 
   @BeforeMethod
   public void testStart() {
@@ -56,7 +56,9 @@ public class UserInterfaceTest {
     //Assert the '2' card is open
     Assert.assertTrue(card2.state().waitForDisplayed());
     //Choose 3 random interests, upload image, click "Next" button.
+    card2.uploadImage();
     card2.pickCheckboxes();
+    card2.clickNext();
     //Assert the '3' card is open
     Assert.assertTrue(card3.state().waitForDisplayed());
   }
