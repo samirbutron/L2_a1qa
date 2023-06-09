@@ -1,8 +1,5 @@
 package samirbutron.test;
 
-import aquality.selenium.browser.AqualityServices;
-import aquality.selenium.browser.Browser;
-
 import aquality.selenium.core.utilities.ISettingsFile;
 import aquality.selenium.core.utilities.JsonSettingsFile;
 import org.testng.Assert;
@@ -15,11 +12,9 @@ import samirbutron.page.Card3;
 import samirbutron.page.MainPage;
 import samirbutron.utils.RandomUtils;
 
-public class UserInterfaceTest {
+public class UserInterfaceTest extends BaseTest {
 
-  private Browser browser;
   private final ISettingsFile testConfig = new JsonSettingsFile("testconfig.json");
-  private final String url = testConfig.getValue("/url").toString();
   private final MainPage mainPage = new MainPage();
   private final Card1 card1 = new Card1();
   private final Card2 card2 = new Card2();
@@ -27,14 +22,12 @@ public class UserInterfaceTest {
 
   @BeforeMethod
   public void testStart() {
-    browser = AqualityServices.getBrowser();
-    //Navigate to home page
-    browser.goTo(url);
+    setWebPage();
   }
 
   @AfterMethod
   public void testEnd() {
-    browser.quit();
+    tearDown();
   }
 
   @Test
@@ -45,12 +38,11 @@ public class UserInterfaceTest {
     mainPage.clickLink();
     //Assert the '1' card is open
     Assert.assertTrue(card1.state().waitForDisplayed());
-
     //Input random valid password, email, accept the terms of use and click "next" button.
     String email = RandomUtils.generateString();
     String password = RandomUtils.generatePassword(email);
     String server = RandomUtils.generateString();
-    card1.fillForm(password,email,server);
+    card1.fillForm(password, email, server);
     card1.acceptTerms();
     card1.clickNext();
     //Assert the '2' card is open
@@ -72,7 +64,6 @@ public class UserInterfaceTest {
     card1.hideHelp();
     //Assert Form content is hidden
     Assert.assertTrue(card1.helpFormIsHidden());
-
   }
 
   @Test
@@ -93,7 +84,6 @@ public class UserInterfaceTest {
     mainPage.clickLink();
     //Validate that timer starts from "00:00"
     card1.getTimerStart();
-    Assert.assertEquals(card1.getTimerStart(), testConfig.getValue("/expectedTime") );
-
+    Assert.assertEquals(card1.getTimerStart(), testConfig.getValue("/expectedTime"));
   }
 }

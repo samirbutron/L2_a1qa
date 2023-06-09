@@ -7,14 +7,15 @@ import org.openqa.selenium.By;
 
 public class MainPage extends Form {
 
-    public MainPage() {
-        super(By.className("start__button"), "Main page");
-    }
+  public MainPage() {
+    super(By.className("start__button"), "Main page");
+  }
 
-    private final ILink iLink = AqualityServices.getElementFactory().getLink(By.className("start__link"), "Link from 'HERE' text");
+  private final ILink iLink = AqualityServices.getElementFactory()
+      .getLink(By.className("start__link"), "Link from 'HERE' text");
 
-    public void clickLink (){
-        iLink.click();
-    }
+  public void clickLink() {
+    iLink.click();
+  }
 
 }

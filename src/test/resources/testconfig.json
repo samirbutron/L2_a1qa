@@ -1,4 +1,5 @@
 {
-  "url" : "https://userinyerface.com/",
-  "expectedTime" : "00:00"
+  "url": "https://userinyerface.com/",
+  "expectedTime": "00:00",
+  "imagePath": "/src/test/resources/dogPic.jpg"
 }
