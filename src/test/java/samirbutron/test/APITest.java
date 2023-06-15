@@ -1,7 +1,5 @@
 package samirbutron.test;
 
-import aquality.selenium.core.utilities.ISettingsFile;
-import aquality.selenium.core.utilities.JsonSettingsFile;
 import com.google.gson.Gson;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
@@ -13,15 +11,14 @@ import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import samirbutron.POJO.Post;
-import samirbutron.POJO.User;
+import samirbutron.POJO.PostModel;
+import samirbutron.POJO.UserModel;
 import samirbutron.utils.APIUtils;
-import samirbutron.utils.POJOUtil;
 import samirbutron.utils.RandomUtil;
+import samirbutron.utils.TestConfigUtil;
 
 public class APITest extends BaseTest {
 
-  private static final ISettingsFile testConfig = new JsonSettingsFile("testconfig.json");
   private static final Gson gson = new Gson();
 
   @BeforeMethod
@@ -40,69 +37,84 @@ public class APITest extends BaseTest {
     //STEP 1
     Response allPostsResponse = APIUtils.getAllPosts();
     //Status code is 200
-    Assert.assertEquals(allPostsResponse.getStatusCode(), HttpStatus.SC_OK, "Status code is incorrect");
+    Assert.assertEquals(allPostsResponse.getStatusCode(), HttpStatus.SC_OK,
+        "Status code is incorrect");
     //The list in response body is json
     Assert.assertTrue(allPostsResponse.contentType().startsWith(ContentType.JSON.toString()),
         "Response content type is not JSON");
     //Posts are sorted ascending (by id)
-    List<Post> postsList = POJOUtil.convertToPOJOPosts(allPostsResponse);
-    List<Post> orderedPosts = new ArrayList<>(postsList);
-    orderedPosts.sort(Comparator.comparingInt(Post::getId));
-    Assert.assertEquals(postsList, orderedPosts, "Posts are not ordered");
+    List<PostModel> postsList = allPostsResponse.body().jsonPath().getList(".", PostModel.class);
+    List<PostModel> orderedPostModels = new ArrayList<>(postsList);
+    orderedPostModels.sort(Comparator.comparingInt(PostModel::getId));
+    Assert.assertEquals(postsList, orderedPostModels, "Posts are not ordered");
     //STEP 2
-    int validPost = (int) testConfig.getValue("/valid post");
-    int validPostId = (int) testConfig.getValue("/valid post Uid");
+    int validPost = TestConfigUtil.validPostGetId;
+    int validPostId = TestConfigUtil.validPostGetUId;
     Response postByIdResponse = APIUtils.getPostById(validPost);
     //Status code is 200
-    Assert.assertEquals(postByIdResponse.getStatusCode(), HttpStatus.SC_OK, "Status code incorrect");
+    Assert.assertEquals(postByIdResponse.getStatusCode(), HttpStatus.SC_OK,
+        "Status code incorrect");
     //Post information is correct: userId = 10, id = 99, (title && body != null)
-    Post postById = POJOUtil.convertToPOJOPost(postByIdResponse);
-    Assert.assertEquals(postById.getUserId(), validPostId, "User Id incorrect");
-    Assert.assertEquals(postById.getId(), validPost, "Id incorrect");
-    Assert.assertNotNull(postById.getTitle());
-    Assert.assertNotNull(postById.getBody());
+    PostModel postModelById = postByIdResponse.body().as(PostModel.class);
+    Assert.assertEquals(postModelById.getUserId(), validPostId, "User Id incorrect");
+    Assert.assertEquals(postModelById.getId(), validPost, "Id incorrect");
+    Assert.assertNotNull(postModelById.getTitle());
+    Assert.assertNotNull(postModelById.getBody());
     //STEP 3
-    int invalidPost = (int) testConfig.getValue("/invalid post");
+    int invalidPost = TestConfigUtil.invalidPostId;
     Response invalidPostResponse = APIUtils.getPostById(invalidPost);
     //Status code is 404
-    Assert.assertEquals(invalidPostResponse.getStatusCode(), HttpStatus.SC_NOT_FOUND, "Status code incorrect");
+    Assert.assertEquals(invalidPostResponse.getStatusCode(), HttpStatus.SC_NOT_FOUND,
+        "Status code incorrect");
     //Response body is empty
-    Assert.assertEquals(invalidPostResponse.getBody().asString(), "{}", "Response body is not empty");
+    Assert.assertEquals(invalidPostResponse.getBody().asString(), "{}",
+        "Response body is not empty");
     //STEP 4
     String randomTitle = RandomUtil.generateString();
     String randomBody = RandomUtil.generateString();
-    int postUserId = (int) testConfig.getValue("/post UserId");
-    Post postPayload = new Post(postUserId, randomTitle, randomBody);
-    Response postResponse = APIUtils.doPost(postPayload);
+    int postUserId = TestConfigUtil.postUserId;
+    PostModel postModelPayload = new PostModel(postUserId, randomTitle, randomBody);
+    Response postResponse = APIUtils.postToServer(postModelPayload);
     //Status code is 201
     Assert.assertEquals(postResponse.getStatusCode(), HttpStatus.SC_CREATED,
         "Status code is incorrect");
     //Post information is correct
-    Post responsePost = POJOUtil.convertToPOJOPost(postResponse);
+    PostModel responsePostModel = postResponse.body().as(PostModel.class);
     //Maybe I could override Equals method for Post that just evaluates this 3 fields
-    Assert.assertEquals(responsePost.getUserId(), postUserId, "User Id is different");
-    Assert.assertEquals(responsePost.getTitle(), randomTitle, "Title is different");
-    Assert.assertEquals(responsePost.getBody(), randomBody, "Body is different");
+    Assert.assertEquals(responsePostModel.getUserId(), postUserId, "User Id is different");
+    Assert.assertEquals(responsePostModel.getTitle(), randomTitle, "Title is different");
+    Assert.assertEquals(responsePostModel.getBody(), randomBody, "Body is different");
     //STEP 5
-    String user5String = testConfig.getValue("/user5").toString();
-    int id = (int) testConfig.getValue("/get id");
-    User expectedUser = gson.fromJson(user5String, User.class);
+    String testUserString = TestConfigUtil.userString;
+    int id = TestConfigUtil.getUserId;
+    UserModel expectedUserModel = gson.fromJson(testUserString, UserModel.class);
     Response allUsersResponse = APIUtils.getAllUsers();
-    List<User> users = POJOUtil.convertToPOJOUsers(allUsersResponse);
-    User actualUserFromList = users.get(id - 1);
+    List<UserModel> userModels = allUsersResponse.getBody().jsonPath()
+        .getList(".", UserModel.class);
+    UserModel actualUserFromListModel = null;
+    for (UserModel userModel : userModels) {
+      if (userModel.getId() == id) {
+        actualUserFromListModel = userModel;
+        break;
+      }
+    }
     //Status code is 200
-    Assert.assertEquals(allUsersResponse.getStatusCode(), HttpStatus.SC_OK, "Status code is incorrect");
+    Assert.assertEquals(allUsersResponse.getStatusCode(), HttpStatus.SC_OK,
+        "Status code is incorrect");
     //The list in response body is JSON
     Assert.assertTrue(allUsersResponse.contentType().startsWith(ContentType.JSON.toString()),
         "Response content type is not JSON");
     //User data equals to: (something)
-    Assert.assertTrue(actualUserFromList.equals(expectedUser));
+    Assert.assertEquals(expectedUserModel, actualUserFromListModel,
+        "User object is different from expected");
     //STEP 6
     Response userByIdResponse = APIUtils.getUserById(id);
-    User actualUserById = POJOUtil.convertToPOJOUser(userByIdResponse);
+    UserModel actualUserByIdModel = userByIdResponse.body().as(UserModel.class);
     //Status code is 200
-    Assert.assertEquals(userByIdResponse.getStatusCode(), HttpStatus.SC_OK, "Status code incorrect");
+    Assert.assertEquals(userByIdResponse.getStatusCode(), HttpStatus.SC_OK,
+        "Status code incorrect");
     //User data matches with user data in previous step
-    Assert.assertTrue(actualUserById.equals(actualUserFromList));
+    Assert.assertEquals(actualUserFromListModel, actualUserByIdModel,
+        "User object is different from expected");
   }
 }

@@ -1,11 +1,12 @@
 {
-  "url": "https://jsonplaceholder.typicode.com",
-  "valid post": 99,
-  "valid post Uid": 10,
-  "invalid post": 150,
-  "post UserId": 1,
-  "get id": 5,
-  "user5": {
+  "postsEndPoint": "/posts",
+  "usersEndPoint": "/users",
+  "validPostGetId": 99,
+  "validPostGetUId": 10,
+  "invalidPostGetId": 150,
+  "postUserId": 1,
+  "getUserId": 5,
+  "testUser": {
     "id": 5,
     "name": "Chelsey Dietrich",
     "username": "Kamren",

@@ -6,7 +6,8 @@ import aquality.selenium.core.utilities.JsonSettingsFile;
 public class TestConfigUtil {
 
   private static final ISettingsFile testConfig = new JsonSettingsFile("testconfig.json");
-  public static final String url = testConfig.getValue("/url").toString();
+  private static final ISettingsFile config = new JsonSettingsFile("config.json");
+  public static final String url = config.getValue("/url").toString();
   public static final String postsEndPoint = testConfig.getValue("/postsEndPoint").toString();
   public static final String usersEndPoint = testConfig.getValue("/usersEndPoint").toString();
   public static final int validPostGetId = (int) testConfig.getValue("/validPostGetId");

@@ -1,20 +1,15 @@
 package samirbutron.utils;
 
-import aquality.selenium.browser.AqualityServices;
-import aquality.selenium.core.logging.Logger;
-import aquality.selenium.core.utilities.ISettingsFile;
-import aquality.selenium.core.utilities.JsonSettingsFile;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
-import samirbutron.POJO.Post;
+import samirbutron.POJO.PostModel;
 
 public class APIUtils {
 
-  private static final ISettingsFile testConfig = new JsonSettingsFile("testconfig.json");
-  private final static String url = testConfig.getValue("/url").toString();
-  private final static String posts = "/posts";
-  private final static String users = "/users";
+  private final static String url = TestConfigUtil.url;
+  private final static String posts = TestConfigUtil.postsEndPoint;
+  private final static String users = TestConfigUtil.usersEndPoint;
 
   public static Response getAllPosts() {
     return RestAssured.given().baseUri(url).request().get(posts);
@@ -24,8 +19,9 @@ public class APIUtils {
     return RestAssured.given().baseUri(url).request().get(posts + "/" + number);
   }
 
-  public static Response doPost(Post post) {
-    return RestAssured.given().baseUri(url).contentType(ContentType.JSON).body(post).post(posts);
+  public static Response postToServer(PostModel postModel) {
+    return RestAssured.given().baseUri(url).contentType(ContentType.JSON).body(postModel)
+        .post(posts);
   }
 
   public static Response getAllUsers() {
