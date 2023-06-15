@@ -17,5 +17,4 @@ public class MainPage extends Form {
   public void clickLink() {
     iLink.click();
   }
-
 }

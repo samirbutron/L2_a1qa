@@ -19,12 +19,15 @@ public class Card2 extends Form {
   public Card2() {
     super(By.xpath("//div[@class='avatar-and-interests__form']"), "Card 2 form");
   }
+
   private static final ISettingsFile testConfig = new JsonSettingsFile("testconfig.json");
   private static final String IMAGE_PATH = testConfig.getValue("/imagePath").toString();
   private final IButton upload = AqualityServices.getElementFactory()
       .getButton(By.xpath("//a[@class='avatar-and-interests__upload-button']"), "Upload button");
   private final ICheckBox checkBox = AqualityServices.getElementFactory()
       .getCheckBox(By.xpath("//div[@class='avatar-and-interests__interests-list']"), "Checkbox");
+  private final static String selectAll = testConfig.getValue("/selectAllCBElement").toString();
+  private final static String unselectAll = testConfig.getValue("/selectAllCBElement").toString();
   private static final String CHECKBOX_ELEMENTS_LOCATION = "//label[@class='checkbox__label']";
 
   private final IButton next = AqualityServices.getElementFactory()
@@ -33,8 +36,6 @@ public class Card2 extends Form {
   public void pickCheckboxes() {
     List<ICheckBox> checkboxes = checkBox.findChildElements(By.xpath(CHECKBOX_ELEMENTS_LOCATION),
         "Checkbox element", ElementType.CHECKBOX);
-    String selectAll = "interest_selectall"; //Checkbox to be removed
-    String unselectAll = "interest_unselectall"; //Checkbox to be removed
     List<ICheckBox> newList = checkboxes.stream()
         .peek(element -> {
           if (element.getAttribute("for").equals(unselectAll)) {

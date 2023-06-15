@@ -1,5 +1,6 @@
 {
-  "url": "https://userinyerface.com/",
+  "selectAllCBElement": "interest_selectall",
+  "unselectAllCBElement": "interest_unselectall",
   "expectedTime": "00:00",
   "imagePath": "/src/test/resources/dogPic.jpg"
 }

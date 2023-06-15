@@ -20,15 +20,6 @@ public class UserInterfaceTest extends BaseTest {
   private final Card2 card2 = new Card2();
   private final Card3 card3 = new Card3();
 
-  @BeforeMethod
-  public void testStart() {
-    setWebPage();
-  }
-
-  @AfterMethod
-  public void testEnd() {
-    tearDown();
-  }
 
   @Test
   public void test1() {

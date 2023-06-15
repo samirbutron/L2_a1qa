@@ -32,7 +32,8 @@ public class Card1 extends Form {
   private final ILabel terms = getElementFactory().getLabel(
       By.xpath("//span[@class='checkbox__box']"),
       "Terms check box");
-  private final IButton next = getElementFactory().getButton(By.xpath("//a[@class='button--secondary']"),
+  private final IButton next = getElementFactory().getButton(
+      By.xpath("//a[@class='button--secondary']"),
       "Next button");
 
   private final ILabel helpForm = AqualityServices.getElementFactory()
@@ -75,7 +76,7 @@ public class Card1 extends Form {
 
   //Maybe this method could be separated into two methods waitForHelp() and hideHelp()
   public void hideHelp() {
-      hideHelp.click();
+    hideHelp.click();
   }
 
   public boolean helpFormIsHidden() {
@@ -95,5 +96,4 @@ public class Card1 extends Form {
     String timerString = timer.getText();
     return timerString.substring(3, 8);
   }
-
 }
