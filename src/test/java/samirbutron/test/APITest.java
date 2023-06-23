@@ -8,8 +8,6 @@ import java.util.Comparator;
 import java.util.List;
 import org.apache.hc.core5.http.HttpStatus;
 import org.testng.Assert;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import samirbutron.POJO.PostModel;
 import samirbutron.POJO.UserModel;
@@ -17,21 +15,10 @@ import samirbutron.utils.APIUtils;
 import samirbutron.utils.RandomUtil;
 import samirbutron.utils.TestConfigUtil;
 
-public class APITest extends BaseTest {
+public class APITest {
 
   private static final Gson gson = new Gson();
 
-  @BeforeMethod
-  public void testStart() {
-    setWebPage();
-  }
-
-  @AfterMethod
-  public void testEnd() {
-    tearDown();
-  }
-
-  //
   @Test
   public void test() {
     //STEP 1
@@ -58,8 +45,8 @@ public class APITest extends BaseTest {
     PostModel postModelById = postByIdResponse.body().as(PostModel.class);
     Assert.assertEquals(postModelById.getUserId(), validPostId, "User Id incorrect");
     Assert.assertEquals(postModelById.getId(), validPost, "Id incorrect");
-    Assert.assertNotNull(postModelById.getTitle());
-    Assert.assertNotNull(postModelById.getBody());
+    Assert.assertNotNull(postModelById.getTitle(), "Post title is null");
+    Assert.assertNotNull(postModelById.getBody(), "Post body is null");
     //STEP 3
     int invalidPost = TestConfigUtil.invalidPostId;
     Response invalidPostResponse = APIUtils.getPostById(invalidPost);

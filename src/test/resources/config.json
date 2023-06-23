@@ -1,3 +1,5 @@
 {
-  "url": "https://jsonplaceholder.typicode.com"
+  "url": "https://jsonplaceholder.typicode.com",
+  "postsEndPoint": "/posts",
+  "usersEndPoint": "/users"
 }

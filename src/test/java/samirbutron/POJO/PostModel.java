@@ -1,24 +1,18 @@
 package samirbutron.POJO;
 
 import java.util.Objects;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @NoArgsConstructor
+@Data
 public class PostModel {
 
-  @Getter
-  @Setter
   private int userId;
-  @Getter
-  @Setter
   private int id;
-  @Getter
-  @Setter
   private String title;
-  @Getter
-  @Setter
   private String body;
 
   public PostModel(int userId, String title, String body) {

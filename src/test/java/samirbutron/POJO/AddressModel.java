@@ -1,27 +1,19 @@
 package samirbutron.POJO;
 
 import java.util.Objects;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @NoArgsConstructor
+@Data
 public class AddressModel {
 
-  @Getter
-  @Setter
   private String street;
-  @Getter
-  @Setter
   private String suite;
-  @Getter
-  @Setter
   private String city;
-  @Getter
-  @Setter
   private String zipcode;
-  @Getter
-  @Setter
   private GeoModel geoModel;
 
   @Override

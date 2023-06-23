@@ -12,12 +12,11 @@ public class RandomUtil {
   public static String generateString() {
     StringBuilder emailPrefixBuilder = new StringBuilder();
 
-    int length = random.nextInt(15) + 15; // Random length between 15 and 29
+    int length = TestConfigUtil.generatedStringLength; // Random length between 15 and 29
     for (int i = 0; i < length; i++) {
       char randomChar = generateRandomChar();
       emailPrefixBuilder.append(randomChar);
     }
-
     return emailPrefixBuilder.toString();
   }
 

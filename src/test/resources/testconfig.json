@@ -1,11 +1,10 @@
 {
-  "postsEndPoint": "/posts",
-  "usersEndPoint": "/users",
   "validPostGetId": 99,
   "validPostGetUId": 10,
   "invalidPostGetId": 150,
   "postUserId": 1,
   "getUserId": 5,
+  "generatedStringLength" : 15,
   "testUser": {
     "id": 5,
     "name": "Chelsey Dietrich",

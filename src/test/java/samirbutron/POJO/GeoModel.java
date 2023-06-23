@@ -1,19 +1,17 @@
 package samirbutron.POJO;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @NoArgsConstructor
+@Data
 public class GeoModel {
 
-  @Getter
-  @Setter
-  private float lat;
-  @Getter
-  @Setter
-  private float lng;
 
+  private float lat;
+  private float lng;
 
   @Override
   public boolean equals(Object o) {

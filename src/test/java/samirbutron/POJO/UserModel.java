@@ -1,36 +1,22 @@
 package samirbutron.POJO;
 
 import java.util.Objects;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @NoArgsConstructor
+@Data
 public class UserModel {
 
-  @Getter
-  @Setter
   private int id;
-  @Getter
-  @Setter
   private String name;
-  @Getter
-  @Setter
   private String username;
-  @Getter
-  @Setter
   private String email;
-  @Getter
-  @Setter
   private AddressModel addressModel;
-  @Getter
-  @Setter
   private String phone;
-  @Getter
-  @Setter
   private String website;
-  @Getter
-  @Setter
   private CompanyModel companyModel;
 
   @Override
