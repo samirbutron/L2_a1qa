@@ -1,0 +1,9 @@
+{
+  "projectId": 6,
+  "sessionId": 20,
+  "env": "SamirDesktop",
+  "hqlGetByIdQuery": "FROM TestDAO WHERE id = :id",
+  "hqlOrderDescById": "FROM TestDAO ORDER BY id DESC LIMIT 10",
+  "sqlGetLastEntry": "SELECT * FROM test ORDER BY id DESC LIMIT 1;",
+  "sqlGetRepeatingDigits": "SELECT * FROM test WHERE id REGEXP '^(11|22|33|44|55|66|77|88|99)' LIMIT 10;"
+}

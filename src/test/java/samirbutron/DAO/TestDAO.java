@@ -9,70 +9,48 @@ import javax.persistence.Id;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
 @Table(name = "test")
 @NoArgsConstructor
 @AllArgsConstructor
+@Data
 public class TestDAO {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Getter
-  @Setter
   private int id;
 
   @Column(name = "name", nullable = false)
-  @Getter
-  @Setter
   private String name;
 
   @Column(name = "status_id", nullable = true)
-  @Getter
-  @Setter
   private Integer status_id;
 
   @Column(name = "method_name", nullable = false)
-  @Getter
-  @Setter
   private String method_name;
 
   @Column(name = "project_id", nullable = false)
-  @Getter
-  @Setter
   private int project_id;
 
   @Column(name = "session_id", nullable = false)
-  @Getter
-  @Setter
   private int session_id;
 
   @Column(name = "start_time", nullable = true)
-  @Getter
-  @Setter
   private String start_time;
 
   @Column(name = "end_time", nullable = true)
-  @Getter
-  @Setter
   private String end_time;
 
   @Column(name = "env", nullable = false)
-  @Getter
-  @Setter
   private String env;
 
   @Column(name = "browser", nullable = true)
-  @Getter
-  @Setter
   private String browser;
 
   @Column(name = "author_id", nullable = true)
-  @Getter
-  @Setter
   private String author_id;
 
   @PrePersist

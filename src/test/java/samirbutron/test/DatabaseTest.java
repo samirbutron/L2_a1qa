@@ -4,7 +4,6 @@ import aquality.selenium.browser.AqualityServices;
 import aquality.selenium.core.utilities.ISettingsFile;
 import aquality.selenium.core.utilities.JsonSettingsFile;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -16,11 +15,11 @@ import org.testng.annotations.Test;
 import samirbutron.DAO.TestDAO;
 import samirbutron.PO.Page;
 import samirbutron.utils.HibernateUtil;
-import samirbutron.utils.RandomUtils;
 
 public class DatabaseTest extends BaseTest {
 
   private static final ISettingsFile config = new JsonSettingsFile("config.json");
+  private static final ISettingsFile testconfig = new JsonSettingsFile("testconfig.json");
   private static final String url = config.getValue("/url").toString();
   private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
   private static final Page page = new Page();
@@ -39,15 +38,16 @@ public class DatabaseTest extends BaseTest {
     String testName = result.getMethod().getMethodName();
     String testPath = result.getMethod().getQualifiedName();
     String methodName = classPath + "#" + testPath;
-    int projectID = 6;
-    int sessionId = 20;
+    int projectID = (int) testconfig.getValue("/projectId");
+    int sessionId = (int) testconfig.getValue("/sessionId");
     String endTime = dateFormat.format(new Date());
-    String env = "SamirDesktop";
+    String env = testconfig.getValue("/env").toString();
     String browser = AqualityServices.getBrowser().getBrowserName().name().toLowerCase();
-    TestDAO testResult = new TestDAO(0, testName, result.getStatus(), methodName, projectID,
+    TestDAO ExpectedLastEntry = new TestDAO(0, testName, result.getStatus(), methodName, projectID,
         sessionId, startTime, endTime, env, browser, null);
-    HibernateUtil.createTestEntry(testResult);
-    Assert.assertEquals(HibernateUtil.getLastTestEntry(), testResult, "Last entry is different");
+    HibernateUtil.createTestEntry(ExpectedLastEntry);
+    TestDAO actualLastEntry = HibernateUtil.getLastTestEntry();
+    Assert.assertEquals(actualLastEntry, ExpectedLastEntry, "Last entry is different");
     tearDown();
   }
 
@@ -63,25 +63,24 @@ public class DatabaseTest extends BaseTest {
 
   @Test
   public void test2() {
-    List<Integer> idValues = RandomUtils.generateRandomRepeatingDigitList(300);
-    List<TestDAO> listTests = new ArrayList<>();
-    for (Integer i : idValues) {
-      listTests.add(HibernateUtil.getTestDAOById(i));
-    }
-    if (!listTests.isEmpty()) {
+    List<TestDAO> listTests = HibernateUtil.getTestDAOFirst10RepeatedDigits();
+    if (listTests != null) {
       listTests.removeIf(Objects::isNull);
       for (TestDAO test : listTests) {
         test.setStatus_id(3);
         test.setName("Modified");
       }
       for (TestDAO test : listTests) {
-        HibernateUtil.updateTestEntry(test);
+        HibernateUtil.createTestEntry(test);
       }
-      for (TestDAO test : listTests) {
-        HibernateUtil.deleteTestDAOById(test.getId());
-      }
-      for (TestDAO test : listTests) {
-        Assert.assertNull(HibernateUtil.getTestDAOById(test.getId()));
+      List<TestDAO> last10Entries = HibernateUtil.getTestDaoLast10Entries();
+      if (last10Entries != null) {
+        for (TestDAO test : last10Entries) {
+          HibernateUtil.deleteTestDAOById(test.getId());
+        }
+        for (TestDAO test : last10Entries) {
+          Assert.assertNull(HibernateUtil.getTestDAOById(test.getId()), "Entry was not deleted");
+        }
       }
     }
   }

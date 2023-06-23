@@ -1,5 +1,8 @@
 package samirbutron.utils;
 
+import aquality.selenium.core.utilities.ISettingsFile;
+import aquality.selenium.core.utilities.JsonSettingsFile;
+import java.util.List;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -11,6 +14,7 @@ public class HibernateUtil {
 
   private static final SessionFactory sessionFactory = new Configuration().configure()
       .buildSessionFactory();
+  private static final ISettingsFile testConfig = new JsonSettingsFile("testconfig.json");
 
   public static void createTestEntry(TestDAO testDAO) {
     try (Session session = sessionFactory.openSession()) {
@@ -24,7 +28,7 @@ public class HibernateUtil {
 
   public static TestDAO getTestDAOById(int id) {
     try (Session session = sessionFactory.openSession()) {
-      String hql = "FROM TestDAO WHERE id = :id";
+      String hql = testConfig.getValue("/hqlGetByIdQuery").toString();
       Query<TestDAO> query = session.createQuery(hql, TestDAO.class);
       query.setParameter("id", id);
       return query.uniqueResult();
@@ -33,13 +37,25 @@ public class HibernateUtil {
     }
   }
 
-  public static void updateTestEntry(TestDAO test) {
+  public static List<TestDAO> getTestDAOFirst10RepeatedDigits() {
     try (Session session = sessionFactory.openSession()) {
-      Transaction transaction = session.beginTransaction();
-      session.update(test);
-      transaction.commit();
+      String sql = testConfig.getValue("/sqlGetRepeatingDigits").toString();
+      return session.createNativeQuery(sql, TestDAO.class).getResultList();
     } catch (Exception e) {
       e.printStackTrace();
+      return null;
+    }
+  }
+
+  public static List<TestDAO> getTestDaoLast10Entries() {
+    try (Session session = sessionFactory.openSession()) {
+      String hql = testConfig.getValue("/hqlOrderDescById").toString();
+      Query<TestDAO> query = session.createQuery(hql, TestDAO.class);
+      query.setMaxResults(10);
+      return query.getResultList();
+    } catch (Exception e) {
+      e.printStackTrace();
+      return null;
     }
   }
 
@@ -58,9 +74,8 @@ public class HibernateUtil {
 
   public static TestDAO getLastTestEntry() {
     try (Session session = sessionFactory.openSession()) {
-      String hql = "FROM TestDAO ORDER BY id DESC";
-      Query<TestDAO> query = session.createQuery(hql, TestDAO.class);
-      return query.uniqueResult();
+      String sql = testConfig.getValue("/sqlGetLastEntry").toString();
+      return session.createNativeQuery(sql, TestDAO.class).getSingleResult();
     } catch (Exception e) {
       return null;
     }
